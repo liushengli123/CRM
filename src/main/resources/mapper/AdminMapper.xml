@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gxa.mapper.AdminMapper">
+
+<!--更新会员信息-->
+    <update id="update">
+        update admin
+        <set>
+            <if test="admin.name!=null and admin.name!=''">
+                name=#{admin.name},
+            </if>
+            <if test="admin.pwd!=null and admin.pwd!=''">
+                pwd=#{admin.pwd},
+            </if>
+            <if test="admin.isDeleted!= null">
+                is_deleted=#{admin.isDeleted},
+            </if>
+            <if test="admin.lastLoginTime!= null">
+                last_login_time=#{admin.lastLoginTime},
+            </if>
+            <if test="admin.createTime!= null">
+                create_time=#{admin.createTime},
+            </if>
+            <if test="admin.updateTime!= null">
+                update_time=#{admin.updateTime},
+            </if>
+        </set>
+        where id=${admin.id}
+    </update>
+<!--查询所有会员信息-->
+    <select id="findAll" resultType="com.gxa.pojo.Admin">
+        select * from admin
+    </select>
+<!--通过名字查询会员信息-->
+    <select id="findByName" resultType="com.gxa.pojo.Admin">
+        select * from admin where name=#{name}
+    </select>
+
+</mapper>

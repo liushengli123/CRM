@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gxa.mapper.CourseMapper">
+
+
+    <!--存储课程信息-->
+    <insert id="save">
+      insert into course (course_name, course_desc, course_count, create_time, course_price)
+      values (#{course.courseName},#{course.courseDesc},
+              #{course.courseCount},#{course.createTime},
+              #{course.coursePrice}
+      );
+    </insert>
+
+    <!--通过id删除课程信息-->
+    <update id="deletedByIds">
+          update course set is_deleted=1 where id IN
+          <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+          </foreach>
+    </update>
+    <update id="update">
+        update course
+        <set>
+            <if test="course.courseName!=null and course.courseName!=''">
+                course_name=#{course.courseName},
+            </if>
+            <if test="course.coursePrice!=null">
+                course_price=#{course.coursePrice},
+            </if>
+            <if test="course.courseCount!=null">
+                course_count=#{course.courseCount},
+            </if>
+            <if test="course.courseDesc!=null and course.courseDesc!=''">
+                course_desc=#{course.courseDesc},
+            </if>
+            <if test="course.updateTime!=null">
+                update_time=#{course.updateTime}
+            </if>
+        </set>
+        where id=#{course.id}
+    </update>
+    <update id="updateById">
+        update course set is_deleted=1 where id=#{id}
+    </update>
+    <!--查找所有课程信息-->
+    <select id="findAll" resultType="com.gxa.pojo.Course">
+          select * from course
+          <where>
+              is_deleted=0
+              <if test="courseParam.keywords!=null and courseParam.keywords!=''">
+                  and course_name LIKE concat('%',#{courseParam.keywords},'%')
+              </if>
+              <if test="courseParam.start!=null and courseParam.start!=''">
+                  and create_time >= #{courseParam.start}
+              </if>
+              <if test="courseParam.end!=null and courseParam.end!=''">
+                  and create_time &lt;= #{courseParam.end}
+              </if>
+          </where>
+        order by id desc
+    </select>
+
+    <!--通过课程姓名查找课程-->
+    <select id="findAll2" resultType="com.gxa.pojo.Course">
+          select * from course where is_deleted=0 order by id DESC
+    </select>
+    <select id="findByName" resultType="com.gxa.pojo.Course">
+          select * from course where course_name=#{courseName}
+    </select>
+
+    <select id="findByPK" resultType="com.gxa.pojo.Course">
+          select * from course where id=#{id} and is_deleted=0
+    </select>
+</mapper>
